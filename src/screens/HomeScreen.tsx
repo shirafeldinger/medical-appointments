@@ -3,8 +3,8 @@ import { View, Text, Button, Alert, StyleSheet } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthContext } from '../context/AuthContext';
 import { AppointmentContext } from '../context/AppointmentContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RootStackParamList } from '../types/AppStackParamList';
+import { useAppointmentStorage } from '../hooks/useAppointmentStorage';
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -19,12 +19,11 @@ export default function HomeScreen({
   const { username, logout } = useContext(AuthContext);
   const { state, dispatch } = useContext(AppointmentContext);
   const { specialty, date, time } = state;
-
+  const { clear } = useAppointmentStorage(username);
   const hasAppointment = specialty && date && time;
 
   const handleCancel = async () => {
-    await AsyncStorage.removeItem(`appointment_${username}`);
-    dispatch({ type: 'LOAD_FROM_STORAGE', payload: null });
+    await clear();
     Alert.alert('התור בוטל בהצלחה');
   };
 

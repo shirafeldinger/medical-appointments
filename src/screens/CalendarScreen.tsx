@@ -1,12 +1,12 @@
 import { useContext, useState } from 'react';
 import { View, Text, Button, ScrollView, StyleSheet } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppointmentContext } from '../context/AppointmentContext';
 import { AuthContext } from '../context/AuthContext';
 import { SCHEDULES } from '../constants';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/AppStackParamList';
 import { TimeSelector } from '../components/TimeSelector';
+import { useAppointmentStorage } from '../hooks/useAppointmentStorage';
 
 type CalendarScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -24,7 +24,7 @@ export default function CalendarScreen({
     date: string;
     time: string;
   } | null>(null);
-
+  const { save } = useAppointmentStorage(username);
   const schedule = SCHEDULES[state.specialty as keyof typeof SCHEDULES] || {};
 
   const handleConfirm = async () => {
@@ -37,10 +37,7 @@ export default function CalendarScreen({
       username,
     };
 
-    await AsyncStorage.setItem(
-      `appointment_${username}`,
-      JSON.stringify(appointment),
-    );
+    await save(appointment);
     dispatch({ type: 'CONFIRM_APPOINTMENT', payload: appointment });
     navigation.navigate('Summary');
   };
