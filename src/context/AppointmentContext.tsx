@@ -29,13 +29,12 @@ export function AppointmentProvider({ children }: { children: ReactNode }) {
     const fetchAppointment = async () => {
       try {
         const appointment = await load();
-        dispatch({
-          type: 'LOAD_FROM_STORAGE',
-          payload: appointment || null,
-        });
+
+        if (appointment) {
+          dispatch({ type: 'LOAD_FROM_STORAGE', payload: appointment });
+        }
       } catch (e) {
         console.error('שגיאה בטעינת תור:', e);
-        dispatch({ type: 'LOAD_FROM_STORAGE', payload: null });
       }
     };
 
