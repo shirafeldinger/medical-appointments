@@ -24,10 +24,22 @@ export function AppointmentProvider({ children }: { children: ReactNode }) {
 
   const { load } = useAppointmentStorage(username);
   useEffect(() => {
-    load().then(appointment => {
-      if (appointment)
-        dispatch({ type: 'LOAD_FROM_STORAGE', payload: appointment });
-    });
+    if (!username) return;
+
+    const fetchAppointment = async () => {
+      try {
+        const appointment = await load();
+        dispatch({
+          type: 'LOAD_FROM_STORAGE',
+          payload: appointment || null,
+        });
+      } catch (e) {
+        console.error('שגיאה בטעינת תור:', e);
+        dispatch({ type: 'LOAD_FROM_STORAGE', payload: null });
+      }
+    };
+
+    fetchAppointment();
   }, [username, load]);
 
   return (

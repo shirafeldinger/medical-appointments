@@ -24,7 +24,7 @@ export default function HomeScreen({
 
   const handleCancel = async () => {
     await clear();
-    dispatch({ type: 'LOAD_FROM_STORAGE', payload: null });
+    dispatch({ type: 'CLEAR_APPOINTMENT' });
     Alert.alert('התור בוטל בהצלחה');
   };
 
